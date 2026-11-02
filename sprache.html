@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KI-Suchagent · Sprachmodus | pycruit</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--pk:#D2126C;--vi:#7B2FBE;--ink:#191919;--mu:#6B6B6B;--bg:#FFF;--soft:#F7F7F8;--line:#ECECEE}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--ink);background:radial-gradient(1200px 600px at 85% -10%,#FCE4F0 0,rgba(252,228,240,0) 60%),radial-gradient(900px 500px at -10% 110%,#EFE3FA 0,rgba(239,227,250,0) 60%),var(--bg);display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px}
+header img{height:30px}
+header span{font-size:13px;color:var(--mu)}
+main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px 20px;text-align:center}
+h1{font-size:26px;line-height:1.25;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
+.sub{font-size:15px;color:var(--mu);margin:0 0 28px;max-width:380px;line-height:1.5}
+.orb{position:relative;width:180px;height:180px;margin:6px 0 26px}
+.orb i{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--vi));}
+.orb i.r1,.orb i.r2{opacity:.18;transform:scale(1)}
+.orb i.core{inset:28px;box-shadow:0 18px 50px rgba(210,18,108,.35);display:flex;align-items:center;justify-content:center}
+.orb svg{width:54px;height:54px;fill:#fff}
+body.listen .orb i.r1{animation:pulse 2.4s ease-out infinite}
+body.listen .orb i.r2{animation:pulse 2.4s ease-out 1.2s infinite}
+body.talk .orb i.r1{animation:pulse 1s ease-out infinite;opacity:.3}
+body.talk .orb i.r2{animation:pulse 1s ease-out .5s infinite;opacity:.3}
+body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
+@keyframes pulse{0%{transform:scale(.62);opacity:.35}100%{transform:scale(1.18);opacity:0}}
+@keyframes beat{to{transform:scale(1.05)}}
+.stat{font-size:16px;font-weight:600;min-height:24px;margin:0 0 22px}
+.btn{appearance:none;border:0;border-radius:999px;font:inherit;font-size:16px;font-weight:700;padding:15px 30px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pk),var(--vi));box-shadow:0 10px 28px rgba(210,18,108,.28)}
+.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn[hidden]{display:none}
+.log{width:100%;max-width:520px;margin:26px auto 0;text-align:left;display:flex;flex-direction:column;gap:8px;max-height:30vh;overflow:auto}
+.log div{font-size:14px;line-height:1.5;padding:10px 14px;border-radius:14px;max-width:88%}
+.log .ai{background:var(--soft);border:1px solid var(--line);align-self:flex-start}
+.log .me{background:#FCE4F0;align-self:flex-end}
+.note{font-size:12px;color:#9A9A9A;margin-top:18px;max-width:420px;line-height:1.5}
+.note a{color:#9A9A9A}
+.err{color:var(--pk)}
+</style></head>
+<body>
+<header><img src="https://onecdn.io/media/10248a55-cfe7-46c4-aeac-dbf7a9b7a3c9/md2x" alt="pycruit"><span>KI-Suchagent</span></header>
+<main>
+ <h1 id="h">Erzählen Sie uns von Ihrer Stelle</h1>
+ <p class="sub" id="sub">Sprechen Sie einfach wie am Telefon. Der Agent fragt nach, bis alles für Ihre Marktanalyse beisammen ist.</p>
+ <div class="orb"><i class="r1"></i><i class="r2"></i><i class="core"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2z"/></svg></i></div>
+ <div class="stat" id="st"></div>
+ <button class="btn" id="go">Gespräch starten</button>
+ <button class="btn sec" id="end" hidden>Gespräch beenden</button>
+ <div class="log" id="log"></div>
+ <p class="note">Ihr Browser fragt beim Start nach dem Mikrofon. Ihre Angaben nutzen wir nur für Ihre Marktanalyse. Mehr dazu im <a href="https://pycruit.de/datenschutz" target="_blank" rel="noopener">Datenschutzhinweis</a>.</p>
+</main>
+<script>
+(function(){
+ var AGENT='agent_4001m63cmvg4fq0vdsq5j175mts7',LIB='https://unpkg.com/@elevenlabs/client@1.28.0/dist/lib.iife.js',PARENT='https://pycruit.de';
+ var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='';
+ try{var p=new URLSearchParams(location.hash.slice(1));firma=(p.get('firma')||'').slice(0,120);
+  var h=p.get('h');if(h)hist=decodeURIComponent(escape(atob(h))).slice(-6000);}catch(e){}
+ function mode(m){document.body.className=m||''}
+ function add(cls,t){var d=document.createElement('div');d.className=cls;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e6;
+  try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:cls==='me'?'user':'agent',text:t},PARENT)}catch(e){}}
+ function lib(){return window.ElevenLabsClient?Promise.resolve():new Promise(function(res,rej){var s=document.createElement('script');s.src=LIB;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+ function done(msg){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
+  $('h').textContent='Danke, das Gespräch ist beendet';$('sub').innerHTML=msg||'Ihre Marktanalyse kommt per E-Mail. Sie können dieses Fenster jetzt schließen.';
+  try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:'end'},PARENT)}catch(e){}}
+ $('go').onclick=function(){
+  $('go').hidden=true;$('st').textContent='Verbinde …';$('st').className='stat';
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(t){t.stop()});return lib()}).then(function(){
+   return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,dynamicVariables:{firma:firma||'Ihr Unternehmen'},
+    onConnect:function(){mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
+    onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
+    onModeChange:function(x){var t=x&&x.mode==='speaking';mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
+    onDisconnect:function(){conv=null;done()},
+    onError:function(){}
+   })}).then(function(c){conv=c;if(hist){try{c.sendContextualUpdate('Bisheriger Verlauf dieses Gesprächs. Knüpfe daran an und frage nichts erneut, was schon beantwortet ist:\n'+hist)}catch(e){}}})
+  .catch(function(e){mode('');$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';
+   $('st').textContent=(e&&e.name==='NotAllowedError')?'Bitte erlauben Sie den Zugriff aufs Mikrofon.':'Das hat nicht geklappt. Bitte versuchen Sie es noch einmal.'});
+ };
+ $('end').onclick=function(){if(conv){try{conv.endSession()}catch(e){}}else done()};
+ window.addEventListener('beforeunload',function(){if(conv){try{conv.endSession()}catch(e){}}});
+})();
+</script>
+</body></html>
