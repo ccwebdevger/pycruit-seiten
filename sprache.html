@@ -35,6 +35,9 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
 .note{font-size:12px;color:#9A9A9A;margin-top:18px;max-width:420px;line-height:1.5}
 .note a{color:#9A9A9A}
 .err{color:var(--pk)}
+.file{margin-top:14px;font:inherit;font-size:14px;font-weight:600;color:var(--pk);background:none;border:1px dashed var(--pk);border-radius:999px;padding:9px 18px;cursor:pointer}
+.file[hidden]{display:none}
+.log .me.f{font-style:italic}
 </style></head>
 <body>
 <header><img src="https://onecdn.io/media/10248a55-cfe7-46c4-aeac-dbf7a9b7a3c9/md2x" alt="pycruit"><span>KI-Suchagent</span></header>
@@ -45,6 +48,8 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  <div class="stat" id="st"></div>
  <button class="btn" id="go">Gespräch starten</button>
  <button class="btn sec" id="end" hidden>Gespräch beenden</button>
+ <button class="file" id="att" hidden>Stellenanzeige als PDF schicken</button>
+ <input type="file" id="fin" accept="application/pdf,image/*,.txt" hidden>
  <div class="log" id="log"></div>
  <p class="note">Ihr Browser fragt beim Start nach dem Mikrofon. Ihre Angaben nutzen wir nur für Ihre Marktanalyse. Mehr dazu im <a href="https://pycruit.de/datenschutz" target="_blank" rel="noopener">Datenschutzhinweis</a>.</p>
 </main>
@@ -58,14 +63,14 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  function add(cls,t){var d=document.createElement('div');d.className=cls;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e6;
   try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:cls==='me'?'user':'agent',text:t},PARENT)}catch(e){}}
  function lib(){return window.ElevenLabsClient?Promise.resolve():new Promise(function(res,rej){var s=document.createElement('script');s.src=LIB;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
- function done(msg){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
+ function done(msg){$('att').hidden=true;mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
   $('h').textContent='Danke, das Gespräch ist beendet';$('sub').innerHTML=msg||'Ihre Marktanalyse kommt per E-Mail. Sie können dieses Fenster jetzt schließen.';
   try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:'end'},PARENT)}catch(e){}}
  $('go').onclick=function(){userEnd=false;
   $('go').hidden=true;$('st').textContent='Verbinde …';$('st').className='stat';
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(t){t.stop()});return lib()}).then(function(){
    t0=Date.now();lastErr='';return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,connectionType:'websocket',dynamicVariables:{firma:firma||'Ihr Unternehmen'},
-    onConnect:function(){mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
+    onConnect:function(){$('att').hidden=false;mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
     onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
     onModeChange:function(x){var t=x&&x.mode==='speaking';mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
     onDisconnect:function(d){conv=null;var why='';try{why=[d&&d.reason,d&&d.message,d&&d.closeReason,d&&d.context&&d.context.reason,lastErr].filter(Boolean).join(' | ')}catch(e){}
@@ -76,6 +81,12 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
   .catch(function(e){mode('');$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';
    $('st').textContent=(e&&e.name==='NotAllowedError')?'Bitte erlauben Sie den Zugriff aufs Mikrofon.':'Das hat nicht geklappt. Bitte versuchen Sie es noch einmal.'});
  };
+ $('att').onclick=function(){$('fin').click()};
+ $('fin').onchange=function(){var f=$('fin').files&&$('fin').files[0];$('fin').value='';if(!f||!conv)return;
+  if(f.size>10*1024*1024){$('st').textContent='Die Datei ist größer als 10 MB.';return}
+  var d=document.createElement('div');d.className='me f';d.textContent='Datei: '+f.name+' …';$('log').appendChild(d);
+  conv.uploadFile(f).then(function(r){conv.sendMultimodalMessage({text:'Hier ist unsere Stellenanzeige.',fileIds:[r.fileId]});d.textContent='Datei: '+f.name})
+  .catch(function(){d.textContent='Datei: '+f.name+' konnte nicht hochgeladen werden'})};
  $('end').onclick=function(){userEnd=true;if(conv){try{conv.endSession()}catch(e){}}else done()};
  window.addEventListener('beforeunload',function(){if(conv){try{conv.endSession()}catch(e){}}});
 })();
