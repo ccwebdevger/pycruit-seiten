@@ -51,7 +51,7 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
 <script>
 (function(){
  var AGENT='agent_4001m63cmvg4fq0vdsq5j175mts7',LIB='https://unpkg.com/@elevenlabs/client@1.28.0/dist/lib.iife.js',PARENT='https://pycruit.de';
- var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='';
+ var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='',t0=0,lastErr='',userEnd=false;
  try{var p=new URLSearchParams(location.hash.slice(1));firma=(p.get('firma')||'').slice(0,120);
   var h=p.get('h');if(h)hist=decodeURIComponent(escape(atob(h))).slice(-6000);}catch(e){}
  function mode(m){document.body.className=m||''}
@@ -61,20 +61,22 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  function done(msg){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
   $('h').textContent='Danke, das Gespräch ist beendet';$('sub').innerHTML=msg||'Ihre Marktanalyse kommt per E-Mail. Sie können dieses Fenster jetzt schließen.';
   try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:'end'},PARENT)}catch(e){}}
- $('go').onclick=function(){
+ $('go').onclick=function(){userEnd=false;
   $('go').hidden=true;$('st').textContent='Verbinde …';$('st').className='stat';
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(t){t.stop()});return lib()}).then(function(){
-   return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,dynamicVariables:{firma:firma||'Ihr Unternehmen'},
+   t0=Date.now();lastErr='';return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,connectionType:'websocket',dynamicVariables:{firma:firma||'Ihr Unternehmen'},
     onConnect:function(){mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
     onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
     onModeChange:function(x){var t=x&&x.mode==='speaking';mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
-    onDisconnect:function(){conv=null;done()},
-    onError:function(){}
+    onDisconnect:function(d){conv=null;var why='';try{why=[d&&d.reason,d&&d.message,d&&d.closeReason,d&&d.context&&d.context.reason,lastErr].filter(Boolean).join(' | ')}catch(e){}
+     if(Date.now()-t0<15000&&!userEnd){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';$('st').textContent='Die Verbindung wurde sofort beendet.';$('sub').textContent='Technischer Hinweis: '+(why||'kein Grund gemeldet');try{console.log('pc-voice disconnect',d,lastErr)}catch(e){}return}
+     done()},
+    onError:function(m,c){lastErr=String(m||'')+(c?' '+JSON.stringify(c).slice(0,200):'');try{console.log('pc-voice error',m,c)}catch(e){}}
    })}).then(function(c){conv=c;if(hist){try{c.sendContextualUpdate('Bisheriger Verlauf dieses Gesprächs. Knüpfe daran an und frage nichts erneut, was schon beantwortet ist:\n'+hist)}catch(e){}}})
   .catch(function(e){mode('');$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';
    $('st').textContent=(e&&e.name==='NotAllowedError')?'Bitte erlauben Sie den Zugriff aufs Mikrofon.':'Das hat nicht geklappt. Bitte versuchen Sie es noch einmal.'});
  };
- $('end').onclick=function(){if(conv){try{conv.endSession()}catch(e){}}else done()};
+ $('end').onclick=function(){userEnd=true;if(conv){try{conv.endSession()}catch(e){}}else done()};
  window.addEventListener('beforeunload',function(){if(conv){try{conv.endSession()}catch(e){}}});
 })();
 </script>
