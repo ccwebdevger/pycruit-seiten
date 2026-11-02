@@ -1,109 +1,794 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KI-Suchagent · Sprachmodus | pycruit</title>
+<title>Ihr KI-Suchagent | pycruit</title>
+<meta name="description" content="Beschreiben Sie Ihre offene Stelle im Chat und erhalten Sie eine kostenlose Marktanalyse per E-Mail.">
 <meta name="robots" content="noindex">
+<meta property="og:type" content="website"><meta property="og:title" content="Ihr KI-Suchagent | pycruit"><meta property="og:site_name" content="pycruit">
+<meta property="og:description" content="Beschreiben Sie Ihre offene Stelle im Chat und erhalten Sie eine kostenlose Marktanalyse per E-Mail.">
+<meta property="og:url" content="https://suchagent.pycruit.de/">
+<link rel="icon" href="assets/logo.png">
 <style>
-:root{--pk:#D2126C;--vi:#7B2FBE;--ink:#191919;--mu:#6B6B6B;--bg:#FFF;--soft:#F7F7F8;--line:#ECECEE}
-*{box-sizing:border-box}html,body{height:100%}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--ink);background:radial-gradient(1200px 600px at 85% -10%,#FCE4F0 0,rgba(252,228,240,0) 60%),radial-gradient(900px 500px at -10% 110%,#EFE3FA 0,rgba(239,227,250,0) 60%),var(--bg);display:flex;flex-direction:column}
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px}
-header img{height:30px}
-header span{font-size:13px;color:var(--mu)}
-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 20px 20px;text-align:center}
-h1{font-size:26px;line-height:1.25;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
-.sub{font-size:15px;color:var(--mu);margin:0 0 28px;max-width:380px;line-height:1.5}
-.orb{position:relative;width:180px;height:180px;margin:6px 0 26px}
-.orb i{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,var(--pk),var(--vi));}
-.orb i.r1,.orb i.r2{opacity:.18;transform:scale(1)}
-.orb i.core{inset:28px;box-shadow:0 18px 50px rgba(210,18,108,.35);display:flex;align-items:center;justify-content:center}
-.orb svg{width:54px;height:54px;fill:#fff}
-body.listen .orb i.r1{animation:pulse 2.4s ease-out infinite}
-body.listen .orb i.r2{animation:pulse 2.4s ease-out 1.2s infinite}
-body.talk .orb i.r1{animation:pulse 1s ease-out infinite;opacity:.3}
-body.talk .orb i.r2{animation:pulse 1s ease-out .5s infinite;opacity:.3}
-body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
-@keyframes pulse{0%{transform:scale(.62);opacity:.35}100%{transform:scale(1.18);opacity:0}}
-@keyframes beat{to{transform:scale(1.05)}}
-.stat{font-size:16px;font-weight:600;min-height:24px;margin:0 0 22px}
-.btn{appearance:none;border:0;border-radius:999px;font:inherit;font-size:16px;font-weight:700;padding:15px 30px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--pk),var(--vi));box-shadow:0 10px 28px rgba(210,18,108,.28)}
-.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
-.btn[hidden]{display:none}
-.log{width:100%;max-width:520px;margin:26px auto 0;text-align:left;display:flex;flex-direction:column;gap:8px;max-height:30vh;overflow:auto}
-.log div{font-size:14px;line-height:1.5;padding:10px 14px;border-radius:14px;max-width:88%}
-.log .ai{background:var(--soft);border:1px solid var(--line);align-self:flex-start}
-.log .me{background:#FCE4F0;align-self:flex-end}
-.note{font-size:12px;color:#9A9A9A;margin-top:18px;max-width:420px;line-height:1.5}
-.note a{color:#9A9A9A}
-.err{color:var(--pk)}
-.file{margin-top:14px;font:inherit;font-size:14px;font-weight:600;color:var(--pk);background:none;border:1px dashed var(--pk);border-radius:999px;padding:9px 18px;cursor:pointer}
-.file[hidden]{display:none}
-.log .me.f{font-style:italic}
-.lnk{display:flex;gap:8px;width:100%;max-width:420px;margin-top:12px}
-.lnk[hidden]{display:none}
-.lnk input{flex:1;min-width:0;font:inherit;font-size:14px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;outline:none}
-.lnk input:focus{border-color:var(--pk)}
-.lnk button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:var(--pk);border:0;border-radius:999px;padding:10px 16px;cursor:pointer;white-space:nowrap}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/inter-400.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/inter-500.woff2) format('woff2')}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/inter-600.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:700;font-display:swap;src:url(assets/fonts/inter-tight-700.woff2) format('woff2')}
+@font-face{font-family:'Inter Tight';font-style:normal;font-weight:800;font-display:swap;src:url(assets/fonts/inter-tight-800.woff2) format('woff2')}
+html{scroll-behavior:smooth}body{margin:0;background:#FFFFFF;-webkit-font-smoothing:antialiased}
+#pc-root{text-align:center}
+#pc-root .pcm,#pc-root .pcc,#pc-root section[style*="#FAFAFA"]{text-align:left}
+#pc-root .pcc-m{text-align:left}
+.pc-foot{text-align:center;padding:72px 16px 48px;font-family:Inter,system-ui,sans-serif;color:#191919}
+.pc-foot img{height:auto}.pc-foot p{margin:20px 0 10px;font-weight:600;font-size:14px}
+.pc-foot nav{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}.pc-foot nav a{color:#191919;font-weight:600;font-size:14px;text-decoration:none}.pc-foot nav a:hover{color:#A50E55}
+#pc-root a:hover {
+  color: #A50E55; }
+
+#pc-root .pcc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  max-height: calc(100vh - 250px);
+  min-height: 420px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E4;
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(25, 25, 25, 0.08);
+  overflow: hidden;
+  text-align: left; }
+
+#pc-root .pcc-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #F0F0F0; }
+
+#pc-root .pcc-av {
+  flex: 0 0 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); }
+
+#pc-root .pcc-who {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25; }
+
+#pc-root .pcc-who b {
+  font-family: 'Inter Tight',sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #191919; }
+
+#pc-root .pcc-who span {
+  font-size: 13px;
+  color: #6B6B6B; }
+
+#pc-root .pcc-log {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 24px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth; }
+
+#pc-root .pcc-m {
+  max-width: 85%;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #191919;
+  white-space: normal;
+  word-wrap: break-word; }
+
+#pc-root .pcc-m.ai {
+  align-self: flex-start; }
+
+#pc-root .pcc-m.me {
+  align-self: flex-end;
+  background: #F2F2F2;
+  border-radius: 20px 20px 6px 20px;
+  padding: 10px 16px; }
+
+#pc-root .pcc-m.sys {
+  align-self: center;
+  font-size: 14px;
+  color: #6B6B6B;
+  text-align: center;
+  max-width: 100%; }
+
+#pc-root .pcc-m p {
+  margin: 0 0 8px; }
+
+#pc-root .pcc-m p:last-child {
+  margin: 0; }
+
+#pc-root .pcc-m a {
+  color: #D2126C; }
+
+#pc-root .pcc-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #3A3A3A; }
+
+#pc-root .pcc-dots {
+  align-self: flex-start;
+  display: flex;
+  gap: 5px;
+  padding: 8px 2px; }
+
+#pc-root .pcc-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #C8C8C8;
+  animation: pccb 1.2s infinite ease-in-out; }
+
+#pc-root .pcc-dots i:nth-child(2) {
+  animation-delay: .15s; }
+
+#pc-root .pcc-dots i:nth-child(3) {
+  animation-delay: .3s; }
+
+@keyframes pccb {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: .5; }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1; } }
+
+#pc-root .pcc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 20px; }
+
+#pc-root .pcc-chips:empty {
+  display: none; }
+
+#pc-root .pcc-chips button {
+  font: inherit;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #DADADA;
+  background: #FFFFFF;
+  color: #191919;
+  cursor: pointer; }
+
+#pc-root .pcc-chips button:hover {
+  border-color: #D2126C;
+  color: #D2126C; }
+
+#pc-root .pcc-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin: 12px 16px 16px;
+  padding: 8px 8px 8px 6px;
+  border: 1px solid #DADADA;
+  border-radius: 26px;
+  background: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); }
+
+#pc-root .pcc-bar:focus-within {
+  border-color: #B8B8B8; }
+
+#pc-root .pcc-bar textarea {
+  flex: 1 1 auto;
+  border: 0;
+  outline: 0;
+  resize: none;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #191919;
+  background: transparent;
+  padding: 7px 4px;
+  max-height: 160px; }
+
+#pc-root .pcc-ico {
+  flex: 0 0 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #6B6B6B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+#pc-root .pcc-ico:hover {
+  background: #F2F2F2;
+  color: #191919; }
+
+#pc-root .pcc-send {
+  flex: 0 0 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%);
+  color: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+#pc-root .pcc-send:disabled {
+  background: #E4E4E4;
+  color: #FFFFFF;
+  cursor: default; }
+
+#pc-root .pcc-consent {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  border: 1px solid #F6C3DA;
+  box-shadow: 0 12px 32px rgba(90, 0, 35, 0.12);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #3A3A3A; }
+
+#pc-root .pcc-consent b {
+  font-family: 'Inter Tight',sans-serif;
+  font-size: 16px;
+  color: #191919; }
+
+#pc-root .pcc-ok {
+  align-self: flex-start;
+  font: inherit;
+  font-weight: 700;
+  font-size: 15px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 4px;
+  background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%);
+  color: #FFFFFF;
+  cursor: pointer; }
+
+@media (max-width: 600px) {
+  #pc-root .pcc {
+    height: 78vh;
+    border-radius: 18px; }
+  #pc-root .pcc-m {
+    max-width: 92%; } }
+
+#pc-root .pcc-voice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 16px 16px;
+  padding: 12px 12px 12px 16px;
+  border: 1px solid #F6C3DA;
+  border-radius: 26px;
+  background: #FFF5FA; }
+
+#pc-root .pcc-orb {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%);
+  animation: pccp 1.6s infinite ease-in-out; }
+
+#pc-root .pcc-voice.talk .pcc-orb {
+  animation-duration: .7s; }
+
+@keyframes pccp {
+  0%, 100% {
+    transform: scale(0.85);
+    opacity: .7; }
+  50% {
+    transform: scale(1.05);
+    opacity: 1; } }
+
+#pc-root .pcc-vstat {
+  flex: 1 1 auto;
+  font-size: 15px;
+  color: #3A3A3A; }
+
+#pc-root .pcc-vend {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid #DADADA;
+  background: #FFFFFF;
+  color: #191919;
+  cursor: pointer; }
+
+#pc-root .pcc-vend:hover {
+  border-color: #D2126C;
+  color: #D2126C; }
+
+section.con-kit-section--type-header {
+  display: none !important; }
+
+#pc-root .pcm {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px; }
+
+#pc-root .pcm-logo img {
+  display: block;
+  height: 52px;
+  width: auto; }
+
+#pc-root .pcm-s {
+  display: none; }
+
+#pc-root .pcm-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px; }
+
+#pc-root .pcm-nav a {
+  font-size: 15px;
+  font-weight: 600;
+  color: #191919;
+  text-decoration: none; }
+
+#pc-root .pcm-nav a:hover {
+  color: #D2126C; }
+
+#pc-root .pcm-q {
+  font-weight: 400;
+  color: #6B6B6B;
+  margin-right: 8px; }
+
+#pc-root .pcm-call b {
+  font-weight: 700; }
+
+#pc-root .pcm-call:hover .pcm-q {
+  color: #6B6B6B; }
+
+#pc-root .pcm-call {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid #DADADA;
+  border-radius: 999px; }
+
+@media (max-width: 600px) {
+  #pc-root .pcm {
+    padding: 10px 16px; }
+  #pc-root .pcm-logo img {
+    height: 32px; }
+  #pc-root .pcm-l {
+    display: none; }
+  #pc-root .pcm-s {
+    display: inline; }
+  #pc-root .pcm-nav {
+    gap: 12px; }
+  #pc-root .pcm-q {
+    display: none; } }
+
+#pc-root .pc-ma {
+  text-align: left; }
+
+#pc-root .pc-ma ul {
+  list-style: none;
+  padding-left: 0 !important;
+  gap: 14px !important; }
+
+#pc-root .pc-ma li {
+  position: relative;
+  padding-left: 34px;
+  line-height: 1.5; }
+
+#pc-root .pc-ma li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #FDE7F1;
+  color: #D2126C;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center; }
+
+#pc-root .pc-ma-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px; }
+
+#pc-root .pc-ma-it {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 14px 16px;
+  background: #FFFFFF;
+  border: 1px solid #EDEDED;
+  border-radius: 16px; }
+
+#pc-root .pc-ma-ic {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #FDE7F1;
+  color: #D2126C;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+
+#pc-root .pc-ma-it b {
+  display: block;
+  font-size: 16px;
+  color: #191919;
+  margin-bottom: 2px; }
+
+#pc-root .pc-ma-it span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #5A5A5A; }
+
+#pc-root .pc-ma-foot {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6B6B6B; }
+
+#pc-root .pc-off {
+  display: none !important; }
+
+#pc-root .pc-vlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #D2126C;
+  text-decoration: none;
+  padding: 4px 0; }
+
+#pc-root .pc-vlink:hover {
+  text-decoration: underline; }
+
+#pc-root .pc-vid {
+  scroll-margin-top: 24px; }
+
+#pc-root .pc-vid-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #191919;
+  box-shadow: 0 12px 40px rgba(25, 25, 25, 0.12); }
+
+#pc-root .pc-vid-box iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0; }
+
+@media (max-width: 600px) {
+  #pc-root .pc-vid h2 {
+    font-size: 28px !important; } }
+
+#pc-root .pc-vplay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: #FFFFFF;
+  font: inherit;
+  background: linear-gradient(rgba(25, 25, 25, 0.35), rgba(25, 25, 25, 0.7)), url(https://onecdn.io/media/d621cb90-9daa-44d0-a081-39f4998498af/lg) center 25%/cover no-repeat; }
+
+#pc-root .pc-vplay-i {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 6px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
+
+#pc-root .pc-vplay:hover .pc-vplay-i {
+  transform: scale(1.06); }
+
+#pc-root .pc-vplay-t {
+  font-size: 20px;
+  font-weight: 700; }
+
+#pc-root .pc-vplay-h {
+  font-size: 13px;
+  color: #E4E4E4;
+  max-width: 80%; }
+
+#pc-root .pc-vplay {
+  background: #191919 !important;
+  overflow: hidden; }
+
+#pc-root .pc-vprev {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0; }
+
+#pc-root .pc-vshade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: linear-gradient(rgba(25, 25, 25, 0.15), rgba(25, 25, 25, 0.55)); }
+
+#pc-root .pc-vplay-i, #pc-root .pc-vplay-t, #pc-root .pc-vplay-h {
+  position: relative;
+  z-index: 2; }
+
+#pc-root .pc-vplay-h {
+  display: none !important; }
 </style></head>
 <body>
-<header><img src="https://onecdn.io/media/10248a55-cfe7-46c4-aeac-dbf7a9b7a3c9/md2x" alt="pycruit"><span>KI-Suchagent</span></header>
-<main>
- <h1 id="h">Erzählen Sie uns von Ihrer Stelle</h1>
- <p class="sub" id="sub">Sprechen Sie einfach wie am Telefon. Der Agent fragt nach, bis alles für Ihre Marktanalyse beisammen ist.</p>
- <div class="orb"><i class="r1"></i><i class="r2"></i><i class="core"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2z"/></svg></i></div>
- <div class="stat" id="st"></div>
- <button class="btn" id="go">Gespräch starten</button>
- <button class="btn sec" id="end" hidden>Gespräch beenden</button>
- <button class="file" id="att" hidden>Stellenanzeige als PDF schicken</button>
- <form class="lnk" id="lnk" hidden><input type="url" id="lurl" placeholder="Oder Link zur Anzeige einfügen" inputmode="url" autocomplete="off"><button type="submit">Link schicken</button></form>
- <input type="file" id="fin" accept="application/pdf,image/*,.txt" hidden>
- <div class="log" id="log"></div>
- <p class="note">Ihr Browser fragt beim Start nach dem Mikrofon. Ihre Angaben nutzen wir nur für Ihre Marktanalyse. Mehr dazu im <a href="https://pycruit.de/datenschutz" target="_blank" rel="noopener">Datenschutzhinweis</a>.</p>
-</main>
+<div id="pc-root" style="font-family: Inter, system-ui, sans-serif; color: #191919; background: #FFFFFF"><header class="pcm"><a class="pcm-logo" href="https://pycruit.de/" target="_blank" rel="noopener" aria-label="pycruit Startseite, öffnet in neuem Tab"><img src="assets/logo.png" alt="pycruit" height="40"></a><nav class="pcm-nav"><a href="https://pycruit.de/#ueber-uns" target="_blank" rel="noopener">Über uns</a><a class="pcm-call" href="https://calendly.com/cc--70/30min" target="_blank" rel="noopener"><span class="pcm-q">Lieber persönlich sprechen?</span><b class="pcm-l">Termin buchen →</b><span class="pcm-s">Persönlich sprechen</span></a></nav></header><section id="chat" style="background: radial-gradient(60% 80% at 85% 0%, rgba(238,57,52,0.08), rgba(210,18,108,0.05) 45%, rgba(255,255,255,0) 75%)"><div style="max-width: 820px; margin: 0 auto; padding: 20px 24px 48px; display: flex; flex-direction: column; gap: 16px"><div style="display: flex; flex-direction: column; gap: 6px; align-items: center; text-align: center"><p id="pc-gruss" style="margin: 0; font-size: 14px; font-weight: 600; color: #3A3A3A; display: none">Guten Tag, <span id="pc-firma"></span></p><h1 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: clamp(26px, 4vw, 36px); line-height: 1.15; letter-spacing: -0.01em; color: #D2126C">Ihr KI-Suchagent ist startklar.</h1><a href="#video" class="pc-vlink"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>So funktioniert es</a><p style="margin: 0; font-size: 16px; line-height: 1.5; color: #3A3A3A">Beschreiben Sie Ihre offene Stelle. Sie bekommen eine kostenlose Marktanalyse und entscheiden danach in Ruhe.</p></div><div id="pc-agent" class="pcc"><div class="pcc-head"><span class="pcc-av" aria-hidden="true"></span><div class="pcc-who"><b>KI-Suchagent</b><span id="pcc-status">von pycruit</span></div></div><div class="pcc-log" id="pcc-log" aria-live="polite"></div><div class="pcc-chips" id="pcc-chips"></div><div class="pcc-consent" id="pcc-consent"><b>Kurz vorab</b><span>Sie schreiben mit einem KI-Agenten von pycruit. Wir speichern den Chat und Ihre Angaben, um Ihre Stelle aufzunehmen und Ihre Marktanalyse zu erstellen. Dafür nutzen wir Dienstleister wie ElevenLabs.</span><button type="button" id="pcc-ok" class="pcc-ok">Einverstanden, los geht's</button></div><form class="pcc-bar" id="pcc-form" autocomplete="off"><button type="button" class="pcc-ico" id="pcc-attach" title="Stellenanzeige hochladen (PDF)" aria-label="Stellenanzeige hochladen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5l-8.6 8.6a5 5 0 0 1-7.1-7.1l8.6-8.6a3.3 3.3 0 0 1 4.7 4.7l-8.6 8.6a1.7 1.7 0 0 1-2.4-2.4l7.9-7.9"></path></svg></button><input type="file" id="pcc-file" accept="application/pdf,.pdf,image/png,image/jpeg" style="display:none"><textarea id="pcc-in" rows="1" placeholder="Zum Beispiel: Senior Controller in Leipzig" aria-label="Ihre Nachricht"></textarea><button type="button" class="pcc-ico" id="pcc-mic" title="Lieber sprechen" aria-label="Lieber sprechen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg></button><button type="submit" class="pcc-send" id="pcc-send" title="Senden" aria-label="Senden"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></button></form><div class="pcc-voice" id="pcc-voice" style="display:none"><span class="pcc-orb" id="pcc-orb" aria-hidden="true"></span><span class="pcc-vstat" id="pcc-vstat">Verbinde …</span><button type="button" class="pcc-vend" id="pcc-vend">Zurück zum Tippen</button></div></div><div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; font-size: 14px; color: #3A3A3A"><span>✓ Marktanalyse kostenlos</span><span>✓ 20 % Honorar, nur bei Einstellung</span><span>✓ Entwickelt aus 10 Jahren Recruiting-Praxis und über 1.000 Besetzungen</span></div><p style="margin: 0; text-align: center; font-size: 13px; line-height: 1.5; color: #6B6B6B">Sie schreiben mit einem KI-Agenten von pycruit. Ihre Angaben nutzen wir nur für <u>Ihre</u> Marktanalyse. Mehr dazu in unseren <a href="https://pycruit.de/nutzungsbedingungen-ki-suchagent">Nutzungsbedingungen</a> und im <a href="https://pycruit.de/impressum#datenschutz">Datenschutzhinweis</a>.</p></div></section><section id="video" class="pc-vid" style="max-width: 960px; margin: 0 auto; padding: 64px 24px 8px; text-align: center"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D2126C">ERKLÄRVIDEO</span><h2 style="margin: 8px 0 24px; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px; line-height: 1.2">So funktioniert der KI-Suchagent</h2><div class="pc-vid-box"><button type="button" class="pc-vplay" onclick="var f=this.parentNode.querySelector('iframe');f.src=f.getAttribute('data-src');this.remove();" aria-label="Video abspielen"><video class="pc-vprev" src="assets/vorschau.mp4" autoplay="" muted="" loop="" playsinline="" preload="auto" aria-hidden="true"></video><span class="pc-vshade"></span><span class="pc-vplay-i"><svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></span><span class="pc-vplay-t">Video abspielen</span><span class="pc-vplay-h">Beim Abspielen wird das Video von Tella geladen. Mehr im Datenschutzhinweis.</span></button><iframe src="about:blank" data-src="https://www.tella.tv/video/vid_cmvz074vd00vs08l29xm53zpp/embed?title=0&amp;b=0&amp;wt=0&amp;a=0&amp;autoPlay=true&amp;muted=0" title="Erklärvideo KI-Suchagent" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen=""></iframe></div></section><section id="ablauf" style="border-top: 1px solid #E4E4E4"><div style="max-width: 1160px; margin: 0 auto; padding: 72px 24px; display: flex; flex-direction: column; gap: 32px"><div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D2126C">ABLAUF</span><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px">So läuft es</h2></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px"><div style="border: 1px solid #E4E4E4; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 10px"><span style="width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 20px; box-shadow: 0 8px 18px rgba(210,18,108,0.3)">1</span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Stelle eingeben</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Am schnellsten geht es im Chat oben. Wenn Sie lieber reden, tippen Sie auf das Mikrofon und sprechen direkt mit unserer KI. Eine fertige Anzeige können Sie auch hochladen.</p></div><div style="border: 1px solid #E4E4E4; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 10px"><span style="width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 20px; box-shadow: 0 8px 18px rgba(210,18,108,0.3)">2</span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Marktanalyse erhalten</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Unsere Suchagenten schauen sich den Markt für Ihre Stelle an. Per E-Mail bekommen Sie die Analyse und unsere ehrliche Einschätzung, wie gut sich die Stelle besetzen lässt. Das kostet Sie nichts.</p></div><div style="border: 1px solid #E4E4E4; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 10px"><span style="width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 20px; box-shadow: 0 8px 18px rgba(210,18,108,0.3)">3</span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Entscheiden</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Wenn Sie wollen, legen wir los. Ab dann kümmert sich ein Recruiter aus unserem Team um Ihre Stelle, zusammen mit den Suchagenten. Bezahlt wird erst, wenn Sie jemanden einstellen: 20 % des Bruttojahresgehalts.</p></div></div></div></section><section style="background: #FAFAFA; border-top: 1px solid #E4E4E4; border-bottom: 1px solid #E4E4E4"><div style="max-width: 1160px; margin: 0 auto; padding: 72px 24px; display: flex; flex-wrap: wrap; gap: 48px; align-items: center"><div class="pc-ma" style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D2126C">IHRE MARKTANALYSE</span><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px">Was Sie bekommen</h2><p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3A3A3A">Danach wissen Sie, wie schwer die Stelle zu besetzen ist und warum.</p><div class="pc-ma-list"><div class="pc-ma-it"><div class="pc-ma-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14l4-4"></path><path d="M3.3 19a10 10 0 1 1 17.4 0"></path></svg></div><div><b>Marktlage als Ampel</b><span>Sie sehen auf einen Blick, wie schwer die Stelle zu besetzen ist.</span></div></div><div class="pc-ma-it"><div class="pc-ma-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div><div><b>Passende Profile in Ihrer Region</b><span>Wie viele passende Profile unsere Suchagenten in Ihrem Umkreis schon gefunden haben.</span></div></div><div class="pc-ma-it"><div class="pc-ma-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12"></path><path d="M4 14h9"></path><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"></path></svg></div><div><b>Ihr Gehaltsbudget im Markt</b><span>Wir ordnen Ihr Budget ein und sagen Ihnen, ob es für die Stelle reicht.</span></div></div><div class="pc-ma-it"><div class="pc-ma-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M15.1 14c.2-1 .7-1.7 1.4-2.5A4.6 4.6 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path></svg></div><div><b>Konkrete Tipps für Ihre Suche</b><span>Wo Titel oder Anforderungen die Suche unnötig eng machen und was den Markt öffnet.</span></div></div></div><p class="pc-ma-foot">Kostenlos und unverbindlich, per E-Mail.</p></div><div style="flex: 1 1 440px; min-width: 0; position: relative; padding: 24px 0 0"><div style="position: absolute; top: 0; right: 16px; z-index: 2; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #191919; color: #FFFFFF; font-size: 13px; font-weight: 500; box-shadow: 0 10px 24px rgba(0,0,0,0.18)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>Neu in Ihrem Postfach</div><div style="background: #FFFFFF; border-radius: 18px; box-shadow: 0 24px 60px rgba(90,0,35,0.18); overflow: hidden"><div style="background: radial-gradient(100% 140% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; padding: 22px 26px; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; opacity: 0.9">MARKTANALYSE · BEISPIEL</span><span style="font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 800">Senior Controller (m/w/d), Leipzig</span></div><div style="padding: 24px 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px"><div style="grid-column: span 1; display: flex; flex-direction: column; align-items: center; gap: 6px; background: #FAFAFA; border-radius: 12px; padding: 16px"><span style="align-self: flex-start; font-size: 13px; font-weight: 600; color: #3A3A3A">Unsere Einschätzung</span><svg width="190" height="110" viewBox="0 0 220 120" role="img" aria-label="Einschätzung: erfordert intensive Direktansprache"><path d="M20 110 A90 90 0 0 1 65 32.06" fill="none" stroke="#3BAA6B" stroke-width="18"></path><path d="M66.5 31.3 A90 90 0 0 1 153.5 31.3" fill="none" stroke="#F2A93B" stroke-width="18"></path><path d="M155 32.06 A90 90 0 0 1 200 110" fill="none" stroke="#E2504A" stroke-width="18"></path><line x1="110" y1="110" x2="124" y2="44" stroke="#191919" stroke-width="5" stroke-linecap="round"></line><circle cx="110" cy="110" r="9" fill="#191919"></circle></svg><span style="font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 800; color: #191919; text-align: center">Erfordert intensive Direktansprache</span></div><div style="display: flex; flex-direction: column; gap: 6px; background: #FAFAFA; border-radius: 12px; padding: 16px"><span style="font-size: 13px; font-weight: 600; color: #3A3A3A">Passende Profile</span><span style="font-family: 'Inter Tight', sans-serif; font-size: 20px; font-weight: 800; color: #D2126C; line-height: 1.2; display: block; margin-bottom: 24px">6 sehr gut<br><span style="color: #E77FAE">+ 12 möglich</span></span><div style="display: flex; align-items: flex-end; gap: 10px; height: 64px; padding-top: 4px" aria-hidden="true"><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><div style="width: 100%; height: 18px; border-radius: 4px; background: #F6C3DA"></div><span style="font-size: 11px; color: #6B6B6B">10 km</span></div><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><div style="width: 100%; height: 32px; border-radius: 4px; background: #E86AA3"></div><span style="font-size: 11px; color: #6B6B6B">30 km</span></div><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px"><div style="width: 100%; height: 46px; border-radius: 4px; background: #D2126C"></div><span style="font-size: 11px; color: #6B6B6B">50 km</span></div></div></div><div style="grid-column: span 2; display: flex; flex-direction: column; gap: 10px; background: #FAFAFA; border-radius: 12px; padding: 16px"><div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px"><span style="font-size: 13px; font-weight: 600; color: #3A3A3A">Gehalt im Markt</span><span style="font-size: 13px; color: #6B6B6B">brutto pro Jahr</span></div><div style="position: relative; height: 40px"><div style="position: absolute; left: 0; right: 0; top: 14px; height: 10px; border-radius: 5px; background: #E4E4E4"></div><div style="position: absolute; left: 22%; right: 20%; top: 14px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #EE3934, #D2126C)"></div><div style="position: absolute; left: 36%; top: 6px; width: 4px; height: 26px; border-radius: 2px; background: #191919"></div><span style="position: absolute; left: 36%; top: -8px; transform: translateX(-40%); font-size: 11px; font-weight: 600; color: #191919">Ihr Budget</span></div><div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600"><span>65.000 Euro</span><span>90.000 Euro</span></div></div><div style="grid-column: span 2; display: flex; gap: 12px; align-items: flex-start; border: 1px solid #F6C3DA; background: #FFF5FA; border-radius: 12px; padding: 14px 16px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D2126C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 20px; margin-top: 1px"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"></path></svg><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #3A3A3A"><strong style="color: #191919">Unser Tipp:</strong> Ist S/4HANA wirklich ein Muss? Fundierte SAP-Erfahrung mit Bereitschaft zum Umstieg öffnet den Markt deutlich.</p></div></div></div></div></div></section><section><div style="max-width: 1160px; margin: 0 auto; padding: 72px 24px; display: flex; flex-direction: column; gap: 32px"><div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D2126C">WARUM PYCRUIT</span><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px">Was bei uns anders läuft</h2></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 28px"><div style="display: flex; flex-direction: column; gap: 8px"><span style="width: 48px; height: 48px; border-radius: 12px; background: #FFF0F6; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D2126C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"></path></svg></span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Wir fangen sofort an</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Die Suchagenten legen los, sobald Ihre Stelle im Chat steht. Auf einen Termin müssen Sie dafür nicht warten.</p></div><div style="display: flex; flex-direction: column; gap: 8px"><span style="width: 48px; height: 48px; border-radius: 12px; background: #FFF0F6; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D2126C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg></span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Gespräche führen Menschen</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Mit Kandidaten spricht bei uns immer jemand aus dem Team. Wir kommen selbst aus dem Recruiting, aus Agenturen und Inhouse-Teams.</p></div><div style="display: flex; flex-direction: column; gap: 8px"><span style="width: 48px; height: 48px; border-radius: 12px; background: #FFF0F6; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D2126C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"></path><path d="M10 20V4"></path><path d="M16 20v-7"></path><path d="M22 20H2"></path></svg></span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Sie wissen, wo die Suche steht</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Regelmäßig kommt ein kurzer Statusbericht. Darin steht, wie viele Leute wir angesprochen haben und wo es hakt.</p></div><div style="display: flex; flex-direction: column; gap: 8px"><span style="width: 48px; height: 48px; border-radius: 12px; background: #FFF0F6; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#D2126C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"></path><path d="M3 12A9 9 0 0 1 18.5 5.8"></path><path d="M19 2v4h-4"></path><path d="M5 22v-4h4"></path></svg></span><h3 style="margin: 0; font-size: 19px; font-weight: 600">Jederzeit im Bild</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">In Ihrer Statustabelle sehen Sie, wen wir angesprochen haben und wie es steht. Namen und Unterlagen sehen Sie, sobald ein Kandidat zustimmt.</p></div></div></div></section><section style="max-width: 1160px; margin: 0 auto 72px; padding: 0 24px"><div style="border-radius: 18px; background: radial-gradient(120% 140% at 100% 0, #3A3A3A 0, #191919 60%); color: #FFFFFF; padding: 44px 40px; display: flex; flex-wrap: wrap; gap: 32px; align-items: center; justify-content: space-between"><div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; text-align: left"><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 32px; line-height: 1.2">Sie möchten lieber mit einem Menschen sprechen?</h2><p style="margin: 0; font-size: 17px; line-height: 1.6; color: #D9D9D9">Fragen zu uns oder zum Ablauf klären wir gern persönlich. 20 Minuten reichen meistens.</p><div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding-top: 8px"><a href="https://calendly.com/cc--70/30min" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 4px; background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 16px; text-decoration: none">Gespräch vereinbaren</a></div></div><div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center"><div style="display: flex; align-items: center"><img src="assets/christian.jpg" alt="Christian Czepeczauer" width="96" height="96" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid #FFFFFF; background: #3A3A3A"><img src="assets/tina.jpg" alt="Tina Carolin Mater" width="96" height="96" style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 3px solid #FFFFFF; background: #3A3A3A; margin-left: -20px"></div><span style="font-size: 15px; font-weight: 600">Christian und Tina</span><span style="font-size: 13px; color: #BDBDBD">freuen sich auf Ihre Anfrage</span></div></div></section><section style="background: radial-gradient(120% 120% at 100% 0, #EE3934 0, #D2126C 55%, #B00F5C 100%); color: #FFFFFF"><div style="max-width: 1160px; margin: 0 auto; padding: 80px 24px; display: flex; flex-direction: column; gap: 32px"><div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #FFFFFF; opacity: 0.85">KUNDENSTIMMEN</span><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px; color: #FFFFFF">Das sagen unsere Kunden</h2></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px"><figure style="margin: 0; background: #FFFFFF; color: #191919; border-radius: 18px; box-shadow: 0 18px 40px rgba(90,0,35,0.28); padding: 26px; display: flex; flex-direction: column; gap: 14px"><svg width="30" height="24" viewBox="0 0 30 24" fill="#D2126C" aria-hidden="true"><path d="M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm16 0V14c0-8 4-12.5 12-14l1.5 3.5C25 5 23 8 23 11h6v13z"></path></svg><blockquote style="margin: 0; font-size: 15px; line-height: 1.6; flex: 1 1 auto">„Eines der besten Unternehmen der Branche, mit denen ich bis dato gearbeitet habe. Sorgfältig ausgewählte und passgenaue Kandidaten. Immer wieder gern!“</blockquote><figcaption style="font-size: 14px; display: flex; gap: 12px; align-items: center; border-top: 1px solid #EFEFEF; padding-top: 14px"><img src="assets/sandra.jpg" alt="Sandra Müller" width="40" height="40" style="flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #F6C3DA"><span><strong>Sandra Müller</strong><br><span style="color: #6B6B6B">Head of HR</span></span></figcaption></figure><figure style="margin: 0; background: #FFFFFF; color: #191919; border-radius: 18px; box-shadow: 0 18px 40px rgba(90,0,35,0.28); padding: 26px; display: flex; flex-direction: column; gap: 14px"><svg width="30" height="24" viewBox="0 0 30 24" fill="#D2126C" aria-hidden="true"><path d="M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm16 0V14c0-8 4-12.5 12-14l1.5 3.5C25 5 23 8 23 11h6v13z"></path></svg><blockquote style="margin: 0; font-size: 15px; line-height: 1.6; flex: 1 1 auto">„Wir pflegen seit einigen Monaten eine intensive Zusammenarbeit mit Christian und konnten unsere Belegschaft mit seiner Hilfe um 10% vergrößern.“</blockquote><figcaption style="font-size: 14px; display: flex; gap: 12px; align-items: center; border-top: 1px solid #EFEFEF; padding-top: 14px"><img src="assets/niklas.jpg" alt="Niklas Kurtenbach" width="40" height="40" style="flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #F6C3DA"><span><strong>Niklas Kurtenbach</strong><br><span style="color: #6B6B6B">Geschäftsführer</span></span></figcaption></figure><figure style="margin: 0; background: #FFFFFF; color: #191919; border-radius: 18px; box-shadow: 0 18px 40px rgba(90,0,35,0.28); padding: 26px; display: flex; flex-direction: column; gap: 14px"><svg width="30" height="24" viewBox="0 0 30 24" fill="#D2126C" aria-hidden="true"><path d="M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm16 0V14c0-8 4-12.5 12-14l1.5 3.5C25 5 23 8 23 11h6v13z"></path></svg><blockquote style="margin: 0; font-size: 15px; line-height: 1.6; flex: 1 1 auto">„Christian ist ein wirklich guter Berater. Er half mir bei der korrekten und detaillierten Marktanalyse sowie mit Empfehlungen, wie ich in Bezug auf meine Geschäftsziele vorgehen soll.“</blockquote><figcaption style="font-size: 14px; display: flex; gap: 12px; align-items: center; border-top: 1px solid #EFEFEF; padding-top: 14px"><img src="assets/atanas.jpg" alt="Atanas Georgiev Rusev" width="40" height="40" style="flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #F6C3DA"><span><strong>Atanas Georgiev Rusev</strong><br><span style="color: #6B6B6B">Geschäftsführer</span></span></figcaption></figure><figure style="margin: 0; background: #FFFFFF; color: #191919; border-radius: 18px; box-shadow: 0 18px 40px rgba(90,0,35,0.28); padding: 26px; display: flex; flex-direction: column; gap: 14px"><svg width="30" height="24" viewBox="0 0 30 24" fill="#D2126C" aria-hidden="true"><path d="M0 24V14C0 6 4 1.5 12 0l1.5 3.5C9 5 7 8 7 11h6v13zm16 0V14c0-8 4-12.5 12-14l1.5 3.5C25 5 23 8 23 11h6v13z"></path></svg><blockquote style="margin: 0; font-size: 15px; line-height: 1.6; flex: 1 1 auto">„Ich kann Christian voller Überzeugung weiterempfehlen! Wenn ich die Zusammenarbeit in drei Worten beschreiben müsste, wären das: erfolgreich, hilfreich und nett.“</blockquote><figcaption style="font-size: 14px; display: flex; gap: 12px; align-items: center; border-top: 1px solid #EFEFEF; padding-top: 14px"><span style="flex: 0 0 40px; height: 40px; border-radius: 50%; background: #FFF0F6; border: 2px solid #F6C3DA; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #A50E55">MB</span><span><strong>Marie Blitzner</strong><br><span style="color: #6B6B6B">Head of Recruiting</span></span></figcaption></figure></div></div></section><section style="max-width: 860px; margin: 0 auto; padding: 72px 24px; display: flex; flex-direction: column; gap: 14px"><h2 style="margin: 0 0 8px; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 38px">Häufige Fragen</h2><details style="border-bottom: 1px solid #E4E4E4; padding: 16px 0"><summary style="font-size: 17px; font-weight: 600; cursor: pointer">Was kostet das?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Die Marktanalyse kostet nichts. Ein Honorar fällt erst an, wenn Sie jemanden über uns einstellen. Es beträgt 20 % des Bruttojahresgehalts. Die Bedingungen bekommen Sie mit der Auftragsbestätigung.</p></details><details style="border-bottom: 1px solid #E4E4E4; padding: 16px 0"><summary style="font-size: 17px; font-weight: 600; cursor: pointer">Muss ich nach der Analyse einen Auftrag geben?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Nein. Wir suchen erst, wenn Sie uns ausdrücklich beauftragen.</p></details><details style="border-bottom: 1px solid #E4E4E4; padding: 16px 0"><summary style="font-size: 17px; font-weight: 600; cursor: pointer">Wer spricht mit den Kandidaten?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Ein Recruiter aus unserem Team. Die Suchagenten finden die Profile, das Gespräch führt immer ein Mensch.</p></details><details style="border-bottom: 1px solid #E4E4E4; padding: 16px 0"><summary style="font-size: 17px; font-weight: 600; cursor: pointer">Was passiert mit meinen Angaben?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Wir brauchen sie für die Marktanalyse und um Ihre Anfrage zu bearbeiten. Details stehen im <a href="https://pycruit.de/impressum#datenschutz">Datenschutzhinweis</a>.</p></details><details style="border-bottom: 1px solid #E4E4E4; padding: 16px 0"><summary style="font-size: 17px; font-weight: 600; cursor: pointer">Welche Stellen übernehmen Sie nicht?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: #3A3A3A">Helferjobs und gewerbliche Stellen, zum Beispiel im Lager, in der Produktion oder im Fahrdienst. Wir suchen Fach- und Führungskräfte mit Ausbildung oder Studium.</p></details></section><section style="max-width: 1160px; margin: 0 auto 72px; padding: 0 24px"><div style="border-radius: 18px; background: #FFF0F6; border: 1px solid #F6C3DA; color: #191919; padding: 48px 40px; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between"><div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 32px">Probieren Sie es mit Ihrer nächsten Stelle.</h2><p style="margin: 0; font-size: 17px; color: #3A3A3A">Die Marktanalyse ist kostenlos. Ob wir danach suchen, entscheiden Sie.</p></div><a href="#chat" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border-radius: 4px; background: radial-gradient(100% 100% at 100% 0, #EE3934 0, #D2126C 100%); color: #FFFFFF; font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 16px; text-decoration: none">Stelle jetzt eingeben</a></div></section></div>
+<footer class="pc-foot"><a href="https://pycruit.de/" aria-label="pycruit Startseite"><img src="assets/logo.png" alt="pycruit" width="120"></a><p>© 2026 pycruit GmbH</p><nav><a href="https://pycruit.de/impressum">Impressum</a><a href="https://pycruit.de/impressum#datenschutz">Datenschutzerklärung</a><a href="https://pycruit.de/wissen">Anwendungsfälle</a></nav></footer>
 <script>
 (function(){
- var AGENT='agent_4001m63cmvg4fq0vdsq5j175mts7',LIB='https://unpkg.com/@elevenlabs/client@1.28.0/dist/lib.iife.js',PARENT='https://pycruit.de';
- var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='',t0=0,lastErr='',userEnd=false,spricht=false;
- try{var p=new URLSearchParams(location.hash.slice(1));firma=(p.get('firma')||'').slice(0,120);
-  var h=p.get('h');if(h)hist=decodeURIComponent(escape(atob(h))).slice(-6000);}catch(e){}
- function mode(m){document.body.className=m||''}
- function add(cls,t){var d=document.createElement('div');d.className=cls;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e6;
-  try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:cls==='me'?'user':'agent',text:t},PARENT)}catch(e){}}
- function lib(){return window.ElevenLabsClient?Promise.resolve():new Promise(function(res,rej){var s=document.createElement('script');s.src=LIB;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
- function done(msg){$('att').hidden=true;$('lnk').hidden=true;mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
-  $('h').textContent='Danke, das Gespräch ist beendet';$('sub').innerHTML=msg||'Ihre Marktanalyse kommt per E-Mail. Sie können dieses Fenster jetzt schließen.';
-  try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:'end'},PARENT)}catch(e){}}
- $('go').onclick=function(){userEnd=false;
-  $('go').hidden=true;$('st').textContent='Verbinde …';$('st').className='stat';
-  navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(t){t.stop()});return lib()}).then(function(){
-   t0=Date.now();lastErr='';return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,connectionType:'websocket',dynamicVariables:{firma:firma||'Ihr Unternehmen'},
-    onConnect:function(){$('att').hidden=false;$('lnk').hidden=false;mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
-    onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
-    onModeChange:function(x){var t=x&&x.mode==='speaking';spricht=t;mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
-    onDisconnect:function(d){conv=null;var why='';try{why=[d&&d.reason,d&&d.message,d&&d.closeReason,d&&d.context&&d.context.reason,lastErr].filter(Boolean).join(' | ')}catch(e){}
-     if(Date.now()-t0<15000&&!userEnd){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';$('st').textContent='Die Verbindung wurde sofort beendet.';$('sub').textContent='Technischer Hinweis: '+(why||'kein Grund gemeldet');try{console.log('pc-voice disconnect',d,lastErr)}catch(e){}return}
-     done()},
-    onError:function(m,c){lastErr=String(m||'')+(c?' '+JSON.stringify(c).slice(0,200):'');try{console.log('pc-voice error',m,c)}catch(e){}}
-   })}).then(function(c){conv=c;if(hist){try{c.sendContextualUpdate('Bisheriger Verlauf dieses Gesprächs. Knüpfe daran an und frage nichts erneut, was schon beantwortet ist:\n'+hist)}catch(e){}}})
-  .catch(function(e){mode('');$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';
-   $('st').textContent=(e&&e.name==='NotAllowedError')?'Bitte erlauben Sie den Zugriff aufs Mikrofon.':'Das hat nicht geklappt. Bitte versuchen Sie es noch einmal.'});
- };
- $('att').onclick=function(){$('fin').click()};
- $('fin').onchange=function(){var f=$('fin').files&&$('fin').files[0];$('fin').value='';if(!f||!conv)return;
-  if(f.size>10*1024*1024){$('st').textContent='Die Datei ist größer als 10 MB.';return}
-  var d=document.createElement('div');d.className='me f';d.textContent='Datei: '+f.name+' …';$('log').appendChild(d);
-  try{conv.sendUserMessage('Ich schicke Ihnen jetzt unsere Stellenanzeige als Datei.')}catch(x){}
-  $('st').textContent='Der Agent schaut sich das Dokument an …';
-  var tStart=Date.now();
-  function warte(){return new Promise(function(res){(function chk(){var dt=Date.now()-tStart;if((dt>1500&&!spricht)||dt>9000)return res();setTimeout(chk,250)})()})}
-  conv.uploadFile(f).then(function(r){return warte().then(function(){if(!conv)return;conv.sendMultimodalMessage({text:'Hier ist unsere Stellenanzeige.',fileIds:[r.fileId]});d.textContent='Datei: '+f.name})})
-  .catch(function(){d.textContent='Datei: '+f.name+' konnte nicht hochgeladen werden'})};
- $('lnk').onsubmit=function(e){e.preventDefault();var u=($('lurl').value||'').trim();if(!conv||!u)return;
-  if(!/^https?:\/\//i.test(u))u='https://'+u;
-  if(u.length>2000||!/^https?:\/\/[^\s\/]+\.[^\s\/]+/i.test(u)){$('st').textContent='Das sieht nicht wie ein Link aus.';return}
-  $('lurl').value='';var d=document.createElement('div');d.className='me f';d.textContent='Link: '+u;$('log').appendChild(d);$('log').scrollTop=1e6;
-  try{conv.sendUserMessage('Hier ist der Link zu unserer Stellenanzeige: '+u)}catch(x){d.textContent='Link konnte nicht gesendet werden'}};
- $('end').onclick=function(){userEnd=true;if(conv){try{conv.endSession()}catch(e){}}else done()};
- window.addEventListener('beforeunload',function(){if(conv){try{conv.endSession()}catch(e){}}});
+  var AGENT = 'agent_4001m63cmvg4fq0vdsq5j175mts7';
+  var LIB = 'https://unpkg.com/@elevenlabs/client@1.28.0/dist/lib.iife.js';
+  var GREETING = 'Hallo! Welche Stelle ist bei Ihnen offen? Titel und Ort reichen für den Anfang. Sie können auch eine Stellenanzeige als PDF oder Link schicken.';
+  var KEY = 'pycruit_hinweis_ok';
+
+  var p = new URLSearchParams(location.search);
+  var f = (p.get('firma') || '').replace(/[<>]/g, '').slice(0, 80).trim();
+  var g = document.getElementById('pc-gruss');
+  if (f && g) { document.getElementById('pc-firma').textContent = f; g.style.display = 'block'; }
+
+
+  // Alles, was von der Seite wegführt, öffnet sich in einem neuen Tab. So bleibt der Chat offen.
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var h = a.getAttribute('href') || '';
+    if (/^(#|tel:|mailto:|javascript:)/i.test(h)) return;
+    a.target = '_blank'; a.rel = 'noopener';
+  }, true);
+
+  var $ = function (id) { return document.getElementById(id); };
+  var log = $('pcc-log'), input = $('pcc-in'), form = $('pcc-form'), send = $('pcc-send');
+  var chips = $('pcc-chips'), consent = $('pcc-consent'), fileIn = $('pcc-file'), status = $('pcc-status');
+  var vpanel = $('pcc-voice'), vstat = $('pcc-vstat');
+  if (!log || log.getAttribute('data-ready')) return;
+  log.setAttribute('data-ready', '1');
+
+  var conv = null, starting = null, skipFirst = false, ended = false, dots = null, sid = 0, voiceOn = false, speaking = false;
+
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function md(t) {
+    var h = esc(String(t).trim());
+    h = h.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+    h = h.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    h = h.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+    return h.split(/\n{2,}/).map(function (x) { return '<p>' + x.replace(/\n/g, '<br>') + '</p>'; }).join('');
+  }
+  function scroll() { log.scrollTop = log.scrollHeight; }
+  function add(cls, html) {
+    var d = document.createElement('div');
+    d.className = 'pcc-m ' + cls; d.innerHTML = html;
+    if (dots && dots.parentNode) log.insertBefore(d, dots); else log.appendChild(d);
+    scroll(); return d;
+  }
+  function typing(on) {
+    if (on && !dots) { dots = document.createElement('div'); dots.className = 'pcc-dots'; dots.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(dots); scroll(); }
+    if (!on && dots) { dots.remove(); dots = null; }
+  }
+  function setChips(list) {
+    chips.innerHTML = '';
+    (list || []).forEach(function (t) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = t;
+      b.onclick = function () { chips.innerHTML = ''; say(t); };
+      chips.appendChild(b);
+    });
+  }
+  function grow() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 160) + 'px'; }
+  function okStored() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
+
+  function loadLib() {
+    if (window.ElevenLabsClient) return Promise.resolve();
+    return new Promise(function (res, rej) {
+      var s = document.createElement('script'); s.src = LIB; s.async = true;
+      s.onload = res; s.onerror = function () { rej(new Error('lib')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function onAgent(text) {
+    if (skipFirst) { skipFirst = false; if (text.trim() === GREETING) return; }
+    typing(false);
+    add('ai', md(text));
+    if (/passt das so\??\s*$/i.test(text.trim())) setChips(['Ja, das passt so', 'Ich möchte etwas ändern']);
+  }
+
+  function history() {
+    var out = [], me = 0;
+    Array.prototype.forEach.call(log.querySelectorAll('.pcc-m.ai, .pcc-m.me'), function (el) {
+      var who = el.classList.contains('me') ? 'Kunde' : 'Agent';
+      if (who === 'Kunde') me++;
+      out.push(who + ': ' + el.textContent.trim());
+    });
+    if (!me) return '';
+    return out.join('\n').slice(-6000);
+  }
+
+  function start(voice, hist) {
+    if (conv) return Promise.resolve(conv);
+    if (starting) return starting;
+    ended = false; skipFirst = true;
+    var my = ++sid;
+    status.textContent = 'verbindet …';
+    starting = loadLib().then(function () {
+      return window.ElevenLabsClient.Conversation.startSession({
+        agentId: AGENT,
+        textOnly: !voice,
+        connectionType: 'websocket',
+        dynamicVariables: { firma: f || 'Ihr Unternehmen' },
+        onConnect: function () { if (my !== sid) return; status.textContent = voice ? 'von pycruit · Sprachmodus' : 'von pycruit · online'; },
+        onMessage: function (m) {
+          if (my !== sid) return;
+          var role = m.role || m.source;
+          if (!m.message) return;
+          if (role === 'user') { if (voice) add('me', md(m.message)); return; }
+          onAgent(m.message);
+        },
+        onModeChange: function (x) {
+          if (!voice || my !== sid) return;
+          var talk = x && x.mode === 'speaking'; speaking = talk;
+          vpanel.classList.toggle('talk', talk);
+          vstat.textContent = talk ? 'Der Agent spricht …' : 'Ich höre zu. Sprechen Sie einfach.';
+        },
+        onError: function () { typing(false); },
+        onDisconnect: function () {
+          if (my !== sid) return;
+          conv = null; starting = null; typing(false); status.textContent = 'von pycruit';
+          if (voice) showVoice(false);
+          if (!ended) { ended = true; add('sys', 'Das Gespräch ist beendet. Schreiben Sie einfach weiter, um eine weitere Stelle einzugeben.'); }
+        }
+      });
+    }).then(function (c) {
+      if (my !== sid) { try { c.endSession(); } catch (e) {} return c; }
+      conv = c; starting = null;
+      if (hist) { try { c.sendContextualUpdate('Bisheriger Verlauf dieses Gesprächs. Knüpfe daran an und frage nichts erneut, was schon beantwortet ist:\n' + hist); } catch (e) {} }
+      return c;
+    }, function (e) {
+      starting = null; typing(false); status.textContent = 'von pycruit';
+      if (voice) { showVoice(false); add('sys', 'Ohne Mikrofon klappt der Sprachmodus nicht. Sie können einfach weiter tippen.'); }
+      else add('sys', 'Der Chat ist gerade nicht erreichbar. Bitte versuchen Sie es gleich noch einmal oder rufen Sie uns an: +49 162 26 77 665.');
+      throw e;
+    });
+    return starting;
+  }
+
+  function showVoice(on) {
+    voiceOn = on; speaking = false;
+    vpanel.style.display = on ? 'flex' : 'none';
+    $('pcc-mic').style.display = on ? 'none' : '';
+    input.placeholder = on ? 'Link einfügen oder etwas tippen …' : 'Antwort schreiben …';
+    vpanel.classList.remove('talk');
+    vstat.textContent = 'Verbinde …';
+    if (!on) setTimeout(function () { input.focus({ preventScroll: true }); }, 50);
+  }
+
+  function startVoice() {
+    setChips([]);
+    var hist = history();
+    var prev = conv;
+    sid++; conv = null; starting = null; typing(false);
+    showVoice(true);
+    var go = function () { return start(true, hist).catch(function () {}); };
+    if (prev) Promise.resolve(prev.endSession()).catch(function () {}).then(go);
+    else go();
+  }
+
+  function stopVoice() {
+    ended = true; sid++;
+    var c = conv; conv = null; starting = null;
+    showVoice(false);
+    status.textContent = 'von pycruit';
+    if (c) Promise.resolve(c.endSession()).catch(function () {});
+  }
+
+  function say(text) {
+    text = String(text || '').trim();
+    if (!text) return;
+    setChips([]);
+    input.placeholder = 'Antwort schreiben …';
+    var hist = conv ? '' : history();
+    add('me', md(text));
+    if (!voiceOn) typing(true);
+    start(false, hist).then(function (c) { c.sendUserMessage(text); }).catch(function () {});
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var t = input.value; input.value = ''; grow(); say(t);
+  });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit')); }
+  });
+  input.addEventListener('input', function () { grow(); if (conv) try { conv.sendUserActivity(); } catch (e) {} });
+
+  $('pcc-attach').addEventListener('click', function () { fileIn.click(); });
+  $('pcc-mic').addEventListener('click', function () { if (!input.disabled) startVoice(); });
+  $('pcc-vend').addEventListener('click', stopVoice);
+  fileIn.addEventListener('change', function () {
+    var file = fileIn.files && fileIn.files[0]; fileIn.value = '';
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { add('sys', 'Die Datei ist größer als 10 MB. Schicken Sie gern einen Link zur Anzeige.'); return; }
+    var text = input.value.trim(); input.value = ''; grow();
+    setChips([]);
+    var hist = conv ? '' : history();
+    add('me', '<span class="pcc-file">Datei: ' + esc(file.name) + '</span>' + (text ? md(text) : ''));
+    typing(true);
+    start(false, hist).then(function (c) {
+      var t0 = Date.now();
+      if (voiceOn) { try { c.sendUserMessage('Ich schicke Ihnen jetzt unsere Stellenanzeige als Datei.'); } catch (e) {} vstat.textContent = 'Der Agent schaut sich das Dokument an …'; }
+      var warte = function () { return new Promise(function (res) { (function chk() { var dt = Date.now() - t0; if (!voiceOn || (dt > 1500 && !speaking) || dt > 9000) return res(); setTimeout(chk, 250); })(); }); };
+      return c.uploadFile(file).then(function (r) {
+        return warte().then(function () { c.sendMultimodalMessage({ text: text || 'Hier ist unsere Stellenanzeige.', fileIds: [r.fileId] }); });
+      });
+    }).catch(function () { typing(false); add('sys', 'Die Datei konnte nicht hochgeladen werden. Schicken Sie gern einen Link zur Anzeige.'); });
+  });
+
+  function unlock() {
+    consent.style.display = 'none';
+    input.disabled = false; send.disabled = false;
+    if (!log.children.length) add('ai', md(GREETING));
+  }
+  if (okStored()) unlock();
+  else { input.disabled = true; send.disabled = true; }
+  $('pcc-ok').addEventListener('click', function () {
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+    unlock(); input.focus(); loadLib().catch(function () {});
+  });
+
+  document.querySelectorAll('#pc-root a[href="#chat"]').forEach(function (a) {
+    a.addEventListener('click', function () { setTimeout(function () { if (!input.disabled) input.focus({ preventScroll: true }); }, 400); });
+  });
 })();
 </script>
 </body></html>
