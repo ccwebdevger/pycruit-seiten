@@ -38,6 +38,11 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
 .file{margin-top:14px;font:inherit;font-size:14px;font-weight:600;color:var(--pk);background:none;border:1px dashed var(--pk);border-radius:999px;padding:9px 18px;cursor:pointer}
 .file[hidden]{display:none}
 .log .me.f{font-style:italic}
+.lnk{display:flex;gap:8px;width:100%;max-width:420px;margin-top:12px}
+.lnk[hidden]{display:none}
+.lnk input{flex:1;min-width:0;font:inherit;font-size:14px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;outline:none}
+.lnk input:focus{border-color:var(--pk)}
+.lnk button{font:inherit;font-size:14px;font-weight:600;color:#fff;background:var(--pk);border:0;border-radius:999px;padding:10px 16px;cursor:pointer;white-space:nowrap}
 </style></head>
 <body>
 <header><img src="https://onecdn.io/media/10248a55-cfe7-46c4-aeac-dbf7a9b7a3c9/md2x" alt="pycruit"><span>KI-Suchagent</span></header>
@@ -49,6 +54,7 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  <button class="btn" id="go">Gespräch starten</button>
  <button class="btn sec" id="end" hidden>Gespräch beenden</button>
  <button class="file" id="att" hidden>Stellenanzeige als PDF schicken</button>
+ <form class="lnk" id="lnk" hidden><input type="url" id="lurl" placeholder="Oder Link zur Anzeige einfügen" inputmode="url" autocomplete="off"><button type="submit">Link schicken</button></form>
  <input type="file" id="fin" accept="application/pdf,image/*,.txt" hidden>
  <div class="log" id="log"></div>
  <p class="note">Ihr Browser fragt beim Start nach dem Mikrofon. Ihre Angaben nutzen wir nur für Ihre Marktanalyse. Mehr dazu im <a href="https://pycruit.de/datenschutz" target="_blank" rel="noopener">Datenschutzhinweis</a>.</p>
@@ -63,14 +69,14 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  function add(cls,t){var d=document.createElement('div');d.className=cls;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e6;
   try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:cls==='me'?'user':'agent',text:t},PARENT)}catch(e){}}
  function lib(){return window.ElevenLabsClient?Promise.resolve():new Promise(function(res,rej){var s=document.createElement('script');s.src=LIB;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
- function done(msg){$('att').hidden=true;mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
+ function done(msg){$('att').hidden=true;$('lnk').hidden=true;mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Neu starten';$('st').textContent='';
   $('h').textContent='Danke, das Gespräch ist beendet';$('sub').innerHTML=msg||'Ihre Marktanalyse kommt per E-Mail. Sie können dieses Fenster jetzt schließen.';
   try{if(window.opener)window.opener.postMessage({type:'pc-voice',role:'end'},PARENT)}catch(e){}}
  $('go').onclick=function(){userEnd=false;
   $('go').hidden=true;$('st').textContent='Verbinde …';$('st').className='stat';
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){s.getTracks().forEach(function(t){t.stop()});return lib()}).then(function(){
    t0=Date.now();lastErr='';return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,connectionType:'websocket',dynamicVariables:{firma:firma||'Ihr Unternehmen'},
-    onConnect:function(){$('att').hidden=false;mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
+    onConnect:function(){$('att').hidden=false;$('lnk').hidden=false;mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
     onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
     onModeChange:function(x){var t=x&&x.mode==='speaking';mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
     onDisconnect:function(d){conv=null;var why='';try{why=[d&&d.reason,d&&d.message,d&&d.closeReason,d&&d.context&&d.context.reason,lastErr].filter(Boolean).join(' | ')}catch(e){}
@@ -87,6 +93,11 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
   var d=document.createElement('div');d.className='me f';d.textContent='Datei: '+f.name+' …';$('log').appendChild(d);
   conv.uploadFile(f).then(function(r){conv.sendMultimodalMessage({text:'Hier ist unsere Stellenanzeige.',fileIds:[r.fileId]});d.textContent='Datei: '+f.name})
   .catch(function(){d.textContent='Datei: '+f.name+' konnte nicht hochgeladen werden'})};
+ $('lnk').onsubmit=function(e){e.preventDefault();var u=($('lurl').value||'').trim();if(!conv||!u)return;
+  if(!/^https?:\/\//i.test(u))u='https://'+u;
+  if(u.length>2000||!/^https?:\/\/[^\s\/]+\.[^\s\/]+/i.test(u)){$('st').textContent='Das sieht nicht wie ein Link aus.';return}
+  $('lurl').value='';var d=document.createElement('div');d.className='me f';d.textContent='Link: '+u;$('log').appendChild(d);$('log').scrollTop=1e6;
+  try{conv.sendUserMessage('Hier ist der Link zu unserer Stellenanzeige: '+u)}catch(x){d.textContent='Link konnte nicht gesendet werden'}};
  $('end').onclick=function(){userEnd=true;if(conv){try{conv.endSession()}catch(e){}}else done()};
  window.addEventListener('beforeunload',function(){if(conv){try{conv.endSession()}catch(e){}}});
 })();
