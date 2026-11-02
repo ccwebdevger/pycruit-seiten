@@ -62,7 +62,7 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
 <script>
 (function(){
  var AGENT='agent_4001m63cmvg4fq0vdsq5j175mts7',LIB='https://unpkg.com/@elevenlabs/client@1.28.0/dist/lib.iife.js',PARENT='https://pycruit.de';
- var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='',t0=0,lastErr='',userEnd=false;
+ var $=function(i){return document.getElementById(i)},conv=null,firma='',hist='',t0=0,lastErr='',userEnd=false,spricht=false;
  try{var p=new URLSearchParams(location.hash.slice(1));firma=(p.get('firma')||'').slice(0,120);
   var h=p.get('h');if(h)hist=decodeURIComponent(escape(atob(h))).slice(-6000);}catch(e){}
  function mode(m){document.body.className=m||''}
@@ -78,7 +78,7 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
    t0=Date.now();lastErr='';return window.ElevenLabsClient.Conversation.startSession({agentId:AGENT,connectionType:'websocket',dynamicVariables:{firma:firma||'Ihr Unternehmen'},
     onConnect:function(){$('att').hidden=false;$('lnk').hidden=false;mode('listen');$('st').textContent='Ich höre zu. Sprechen Sie einfach.';$('end').hidden=false;$('h').textContent='Wir sprechen';$('sub').textContent='Sie können jederzeit unterbrechen oder nachfragen.'},
     onMessage:function(m){if(!m.message)return;add((m.role||m.source)==='user'?'me':'ai',m.message)},
-    onModeChange:function(x){var t=x&&x.mode==='speaking';mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
+    onModeChange:function(x){var t=x&&x.mode==='speaking';spricht=t;mode(t?'talk':'listen');$('st').textContent=t?'Der Agent spricht …':'Ich höre zu. Sprechen Sie einfach.'},
     onDisconnect:function(d){conv=null;var why='';try{why=[d&&d.reason,d&&d.message,d&&d.closeReason,d&&d.context&&d.context.reason,lastErr].filter(Boolean).join(' | ')}catch(e){}
      if(Date.now()-t0<15000&&!userEnd){mode('');$('end').hidden=true;$('go').hidden=false;$('go').textContent='Nochmal versuchen';$('st').className='stat err';$('st').textContent='Die Verbindung wurde sofort beendet.';$('sub').textContent='Technischer Hinweis: '+(why||'kein Grund gemeldet');try{console.log('pc-voice disconnect',d,lastErr)}catch(e){}return}
      done()},
@@ -91,7 +91,11 @@ body.talk .orb i.core{animation:beat .5s ease-in-out infinite alternate}
  $('fin').onchange=function(){var f=$('fin').files&&$('fin').files[0];$('fin').value='';if(!f||!conv)return;
   if(f.size>10*1024*1024){$('st').textContent='Die Datei ist größer als 10 MB.';return}
   var d=document.createElement('div');d.className='me f';d.textContent='Datei: '+f.name+' …';$('log').appendChild(d);
-  conv.uploadFile(f).then(function(r){conv.sendMultimodalMessage({text:'Hier ist unsere Stellenanzeige.',fileIds:[r.fileId]});d.textContent='Datei: '+f.name})
+  try{conv.sendUserMessage('Ich schicke Ihnen jetzt unsere Stellenanzeige als Datei.')}catch(x){}
+  $('st').textContent='Der Agent schaut sich das Dokument an …';
+  var tStart=Date.now();
+  function warte(){return new Promise(function(res){(function chk(){var dt=Date.now()-tStart;if((dt>1500&&!spricht)||dt>9000)return res();setTimeout(chk,250)})()})}
+  conv.uploadFile(f).then(function(r){return warte().then(function(){if(!conv)return;conv.sendMultimodalMessage({text:'Hier ist unsere Stellenanzeige.',fileIds:[r.fileId]});d.textContent='Datei: '+f.name})})
   .catch(function(){d.textContent='Datei: '+f.name+' konnte nicht hochgeladen werden'})};
  $('lnk').onsubmit=function(e){e.preventDefault();var u=($('lurl').value||'').trim();if(!conv||!u)return;
   if(!/^https?:\/\//i.test(u))u='https://'+u;
