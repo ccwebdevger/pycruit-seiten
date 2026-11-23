@@ -643,7 +643,26 @@ section.con-kit-section--type-header {
     if (skipFirst) { skipFirst = false; if (text.trim() === GREETING) return; }
     typing(false);
     add('ai', md(text));
+    if (/Fenster jetzt schlie(ß|ss)en/i.test(text)) abschluss();
     if (/passt das so\??\s*$/i.test(text.trim())) setChips(['Ja, das passt so', 'Ich möchte etwas ändern']);
+  }
+
+  // Abschluss: Nach dem Schlusssatz des Agenten Gespräch beenden, damit das Mikrofon aus ist und keine Nachfragen mehr kommen.
+  function abschluss() {
+    var c0 = conv, t0 = Date.now(), wasVoice = voiceOn, sawTalk = false, still = 0;
+    (function chk() {
+      var dt = Date.now() - t0;
+      if (speaking) { sawTalk = true; still = 0; } else still += 300;
+      var fertig = wasVoice ? ((sawTalk && still >= 900) || dt > 20000) : dt > 1500;
+      if (!fertig) return setTimeout(chk, 300);
+      if (!conv || conv !== c0) return;
+      ended = true; sid++;
+      var c = conv; conv = null; starting = null;
+      if (wasVoice) showVoice(false);
+      status.textContent = 'von pycruit';
+      Promise.resolve(c.endSession()).catch(function () {});
+      add('sys', wasVoice ? 'Das Gespräch ist beendet, das Mikrofon ist aus. Sie können das Fenster jetzt schließen.' : 'Das Gespräch ist beendet. Sie können das Fenster jetzt schließen.');
+    })();
   }
 
   function history() {
