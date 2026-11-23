@@ -643,11 +643,12 @@ section.con-kit-section--type-header {
     if (skipFirst) { skipFirst = false; if (text.trim() === GREETING) return; }
     typing(false);
     add('ai', md(text));
-    if (/Fenster jetzt schlie(ß|ss)en/i.test(text)) abschluss();
+    if (/Fenster jetzt schlie(ß|ss)en/i.test(text)) { schluss = true; abschluss(); }
     if (/passt das so\??\s*$/i.test(text.trim())) setChips(['Ja, das passt so', 'Ich möchte etwas ändern']);
   }
 
   // Abschluss: Nach dem Schlusssatz des Agenten Gespräch beenden, damit das Mikrofon aus ist und keine Nachfragen mehr kommen.
+  var schluss = false;
   function abschluss() {
     var c0 = conv, t0 = Date.now(), wasVoice = voiceOn, sawTalk = false, still = 0;
     (function chk() {
@@ -707,7 +708,7 @@ section.con-kit-section--type-header {
           if (my !== sid) return;
           conv = null; starting = null; typing(false); status.textContent = 'von pycruit';
           if (voice) showVoice(false);
-          if (!ended) { ended = true; add('sys', 'Das Gespräch ist beendet. Schreiben Sie einfach weiter, um eine weitere Stelle einzugeben.'); }
+          if (!ended) { ended = true; add('sys', schluss ? (voice ? 'Das Gespräch ist beendet, das Mikrofon ist aus. Sie können das Fenster jetzt schließen.' : 'Das Gespräch ist beendet. Sie können das Fenster jetzt schließen.') : 'Das Gespräch ist beendet. Schreiben Sie einfach weiter, um eine weitere Stelle einzugeben.'); }
         }
       });
     }).then(function (c) {
